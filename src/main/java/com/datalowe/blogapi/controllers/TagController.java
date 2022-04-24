@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.datalowe.blogapi.dtos.PostDTO;
-import com.datalowe.blogapi.models.Post;
-import com.datalowe.blogapi.services.PostService;
+import com.datalowe.blogapi.dtos.TagDTO;
+import com.datalowe.blogapi.models.Tag;
+import com.datalowe.blogapi.services.TagService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,33 +20,32 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path="api/v1/post")
-public class PostController {
-  private final PostService postService;
+@RequestMapping(path="api/v1/tag")
+public class TagController {
+  private final TagService tagService;
 
-  public PostController(PostService postService) {
-    this.postService = postService;
+  public TagController(TagService tagService) {
+    this.tagService = tagService;
   }
 
   @GetMapping
-  public @ResponseBody Iterable<PostDTO> listPosts() {
-    return PostDTO.postToDTOs(postService.getPosts());
+  public @ResponseBody Iterable<TagDTO> listTags() {
+    return TagDTO.tagsToDTOs(tagService.getTags());
   }
 
   @PostMapping
-  public @ResponseBody String createPost(
-      @RequestBody Post post
+  public @ResponseBody String createTag(
+      @RequestBody Tag tag
     ) {
-      post.setDatetimesToNow();
-      postService.createPost(post);
-      return "Post created";
+      tagService.createTag(tag);
+      return "Tag created";
   }
 
   @GetMapping("/{id}")
-  public @ResponseBody ResponseEntity<?> detailPost(@PathVariable Long id) {
+  public @ResponseBody ResponseEntity<?> detailTag(@PathVariable Long id) {
     try {
-      Post post = postService.getPost(id);
-      return new ResponseEntity<>(new PostDTO(post), HttpStatus.OK);
+      Tag tag = tagService.getTag(id);
+      return new ResponseEntity<>(new TagDTO(tag), HttpStatus.OK);
     } catch (IllegalStateException e) {
       Map<String, String> respObj = Collections.singletonMap("error", e.getMessage());
       return new ResponseEntity<>(respObj, HttpStatus.BAD_REQUEST);
@@ -54,11 +53,11 @@ public class PostController {
   }
 
   @DeleteMapping("/{id}")
-  public @ResponseBody Map<String, String> deletePost(@PathVariable Long id) {
+  public @ResponseBody Map<String, String> deleteTag(@PathVariable Long id) {
     Map<String, String> respObj = new HashMap<>();
     try {
-      postService.deletePost(id);
-      respObj.put("message", "post deleted");
+      tagService.deleteTag(id);
+      respObj.put("message", "tag deleted");
     } catch (IllegalStateException e) {
       respObj.put("error", e.getMessage());
     }

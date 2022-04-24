@@ -3,7 +3,7 @@ package com.datalowe.blogapi.config;
 import java.util.List;
 
 import com.datalowe.blogapi.models.Post;
-import com.datalowe.blogapi.models.PostRepository;
+import com.datalowe.blogapi.repositories.PostRepository;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class PostConfig {
   
   @Bean
-  CommandLineRunner commandLineRunner(
+  CommandLineRunner postCommandLineRunner(
     PostRepository postRepository
   ) {
     return args -> {

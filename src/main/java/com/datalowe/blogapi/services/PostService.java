@@ -1,9 +1,9 @@
-package com.datalowe.blogapi.controllers;
+package com.datalowe.blogapi.services;
 
 import java.util.Optional;
 
 import com.datalowe.blogapi.models.Post;
-import com.datalowe.blogapi.models.PostRepository;
+import com.datalowe.blogapi.repositories.PostRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

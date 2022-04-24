@@ -13,8 +13,10 @@ services:
       POSTGRES_USER: devuser
       POSTGRES_PASSWORD: devpass
       POSTGRES_DB: devdb
-    ports:
-      - "5432:5432"
+    # // uncomment if you want to be able to interact with the
+    # // postgreSQL database directly from host (using e.g. `psql`)
+    # ports:
+    #   - "5432:5432"
   backend:
     build: .
     container_name: datalowe-backend

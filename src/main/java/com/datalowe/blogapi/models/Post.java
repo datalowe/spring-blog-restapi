@@ -1,11 +1,19 @@
 package com.datalowe.blogapi.models;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -23,24 +31,25 @@ public class Post {
     generator="post_sequence"
   )
   private Long id;
+  @Column(unique=true)
   private String title;
   private String body;
   private String blurb;
+  @Column(unique=true)
   private String slug;
   private LocalDateTime publicationDatetime;
   private LocalDateTime updatedDatetime;
 
-  public Post() {
-  }
+  @ManyToMany(cascade = {
+    CascadeType.MERGE
+  })
+  @JoinTable(name = "post_tag",
+      joinColumns = @JoinColumn(name = "post_id"),
+      inverseJoinColumns = @JoinColumn(name = "tag_id")
+  )
+  private Set<Tag> tags = new HashSet<>();
 
-  public Post(long id, String title, String body, String blurb, String slug) {
-    this.id = id;
-    this.title = title;
-    this.body = body;
-    this.blurb = blurb;
-    this.slug = slug;
-    this.publicationDatetime = LocalDateTime.now();
-    this.updatedDatetime = LocalDateTime.now();
+  public Post() {
   }
 
   public Post(String title, String body, String blurb, String slug) {
@@ -52,10 +61,19 @@ public class Post {
     this.updatedDatetime = LocalDateTime.now();
   }
 
-  public long getId() {
-    return this.id;
+  public Post(String title, String body, String blurb, String slug, Tag[] tags) {
+    this.title = title;
+    this.body = body;
+    this.blurb = blurb;
+    this.slug = slug;
+    this.publicationDatetime = LocalDateTime.now();
+    this.updatedDatetime = LocalDateTime.now();
+    List.of(tags).forEach(t -> addTag(t));
   }
 
+  public Long getId() {
+    return this.id;
+  }
 
   public String getTitle() {
     return this.title;
@@ -65,12 +83,16 @@ public class Post {
     return this.body;
   }
 
-  public String getblurb() {
+  public String getBlurb() {
     return this.blurb;
   }
 
   public String getSlug() {
     return this.slug;
+  }
+
+  public Set<Tag> getTags() {
+    return this.tags;
   }
 
   public LocalDateTime getPublicationDatetime() {
@@ -110,18 +132,35 @@ public class Post {
   @Override
   public String toString() {
     return "{" +
-      // " id='" + getId() + "'" +
+      " id='" + getId() + "'" +
       ", title='" + getTitle() + "'" +
       ", body='" + getBody() + "'" +
-      ", blurb='" + getblurb() + "'" +
+      ", blurb='" + getBlurb() + "'" +
       ", slug='" + getSlug() + "'" +
-      // ", publicationDatetime='" + getPublicationDatetime() + "'" +
-      // ", updatedDatetime='" + getUpdatedDatetime() + "'" +
+      ", publicationDatetime='" + getPublicationDatetime() + "'" +
+      ", updatedDatetime='" + getUpdatedDatetime() + "'" +
       "}";
   }
 
+  public void addTag(Tag tag) {
+    tags.add(tag);
+    tag.getPosts().add(this);
+  }
 
+  public void removeTag(Tag tag) {
+      tags.remove(tag);
+      tag.getPosts().remove(this);
+  }
 
-  // private User author;
-  // private List<Tag> tags;
+  @Override
+  public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof Post)) return false;
+      return id != null && id.equals(((Post) o).getId());
+  }
+
+  @Override
+  public int hashCode() {
+      return getClass().hashCode();
+  }
 }

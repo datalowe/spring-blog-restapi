@@ -1,4 +1,6 @@
-package com.datalowe.blogapi.models;
+package com.datalowe.blogapi.repositories;
+
+import com.datalowe.blogapi.models.Post;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
