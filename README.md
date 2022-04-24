@@ -17,9 +17,16 @@ You need to have openJDK 17 and a compatible version of maven installed.
 ## Endpoints
 All endpoints are __prepended__ with `http://localhost:8080/api/v1` and return JSON responses.
 
+### Posts
 * `GET /post`: Get an array of all blog posts.
-* `POST /post`: Create a new blog post, by posting a JSON which includes keys `title`, `body`, `blurb` and `slug`.
+* `POST /post`: Create a new blog post, by sending a JSON object which includes keys `title`, `body`, `blurb` and `slug`.
 * `GET /post/{id}`: Get a single blog post.
 * `DELETE /post/{id}`: Delete a single blog post.
+
+### Tags
+* `GET /tag`: Get an array of all post tags.
+* `POST /tag`: Create a new post tag, by sending a JSON object which includes key `name`.
+* `GET /tag/{id}`: Get a single tag.
+* `DELETE /tag/{id}`: Delete a single tag.
 
 Example request: `curl http://localhost:8080/api/v1/post/1`.
